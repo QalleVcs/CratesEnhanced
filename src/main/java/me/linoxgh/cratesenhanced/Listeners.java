@@ -102,6 +102,7 @@ public class Listeners implements Listener {
         loc.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, 1);
         loc.getWorld().playSound(loc, Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F);
 
+        Bukkit.getScheduler().runTaskLater(plugin, () -> cooldowns.remove(pos), 15*4 + 1);
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             loc.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, 1);
             loc.getWorld().playSound(loc, Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F);
@@ -119,7 +120,7 @@ public class Listeners implements Listener {
                         loc.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, topLoc, 1);
                         loc.getWorld().playSound(loc, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 
-                        loc.getWorld().spawnEntity(
+                        try { loc.getWorld().spawnEntity(
                                 topLoc,
                                 EntityType.DROPPED_ITEM,
                                 CreatureSpawnEvent.SpawnReason.CUSTOM,
@@ -132,8 +133,10 @@ public class Listeners implements Listener {
                                     item.setPickupDelay(20);
                                     item.setItemStack(drop);
                                 }
-                        );
-                        cooldowns.remove(crate.getPos());
+                        ); }
+                        catch (IllegalArgumentException e) {
+                            plugin.getLogger().warning("Unable to drop malformed itemstack: " + drop);
+                        }
                     }, 15L);
                 }, 15L);
             }, 15L);

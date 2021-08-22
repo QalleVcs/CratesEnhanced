@@ -1,5 +1,8 @@
 package me.linoxgh.cratesenhanced.commands;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 import me.linoxgh.cratesenhanced.data.BlockPosition;
@@ -8,6 +11,8 @@ import me.linoxgh.cratesenhanced.data.CrateStorage;
 import me.linoxgh.cratesenhanced.data.CrateType;
 import me.linoxgh.cratesenhanced.utils.ItemUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +79,18 @@ public class ListCommand extends Command {
                 }
                 sender.sendMessage("§e.*.-----_-----{ §3Crates Enhanced §e}-----_-----.*.");
                 sender.sendMessage("§9Reward §e- §9Weight");
-                for (Map.Entry<ItemStack, Integer> entry : crate.getWeights().entrySet()) {
+                List<Map.Entry<ItemStack, Integer>> entries = new ArrayList<>(crate.getWeights().entrySet());
+                entries.sort((e1,e2) -> {
+
+                    int weightDiff = e1.getValue() - e2.getValue();
+                    if (weightDiff != 0) return weightDiff;
+
+                    String s1 = PlainComponentSerializer.plain().serialize(ItemUtil.displayName(e1.getKey()));
+                    String s2 = PlainComponentSerializer.plain().serialize(ItemUtil.displayName(e2.getKey()));
+
+                    return s1.compareTo(s2);
+                });
+                for (Map.Entry<ItemStack, Integer> entry : entries) {
                     ItemStack drop = entry.getKey();
                     if (drop == null) continue;
                     sender.sendMessage(Component.text("§e- §f")

@@ -33,6 +33,10 @@ public class EditCommand extends Command {
             return true;
         }
         ItemStack heldItem = p.getInventory().getItemInMainHand();
+        if (heldItem == null || heldItem.getType().isAir()) {
+            sender.sendMessage("§cYou must hold an item to use this command.");
+            return true;
+        }
 
         // Removing a reward or changing the key.
         if (args.length == 4 && (args[2].equals("reward") || args[2].equals("key"))) {
