@@ -1,4 +1,4 @@
-package me.linoxgh.cratesenhanced.IO;
+package me.linoxgh.cratesenhanced.io;
 
 import java.io.EOFException;
 import java.io.File;
@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import me.linoxgh.cratesenhanced.CratesEnhanced;
-import me.linoxgh.cratesenhanced.Data.Crate;
-import me.linoxgh.cratesenhanced.Data.CrateStorage;
-import me.linoxgh.cratesenhanced.Data.CrateType;
+import me.linoxgh.cratesenhanced.data.Crate;
+import me.linoxgh.cratesenhanced.data.CrateStorage;
+import me.linoxgh.cratesenhanced.data.CrateType;
 import org.bukkit.Bukkit;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -19,12 +19,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class IOManager {
     private final CrateStorage crates;
+    private final CratesEnhanced plugin;
 
     private final File cratesFile;
     private final File crateTypesFile;
 
     public IOManager(@NotNull CratesEnhanced plugin, @NotNull CrateStorage crates) {
         this.crates = crates;
+        this.plugin = plugin;
 
         cratesFile = new File(plugin.getDataFolder().getPath() + File.separator + "crates.dat");
         crateTypesFile = new File(plugin.getDataFolder().getPath() + File.separator + "crate-types.dat");
@@ -36,7 +38,7 @@ public class IOManager {
             cratesFile.getParentFile().mkdirs();
             cratesFile.createNewFile();
         } catch (IOException e) {
-            Bukkit.getConsoleSender().sendMessage("§4Failed to create the crates.dat file.");
+            plugin.getLogger().warning("§4Failed to create the crates.dat file.");
             e.printStackTrace();
         }
 
@@ -44,7 +46,7 @@ public class IOManager {
             crateTypesFile.getParentFile().mkdirs();
             crateTypesFile.createNewFile();
         } catch (IOException e) {
-            Bukkit.getConsoleSender().sendMessage("§4Failed to create the crate-types.dat file.");
+            plugin.getLogger().warning("§4Failed to create the crate-types.dat file.");
             e.printStackTrace();
         }
     }

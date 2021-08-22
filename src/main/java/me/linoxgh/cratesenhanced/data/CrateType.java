@@ -1,4 +1,4 @@
-package me.linoxgh.cratesenhanced.Data;
+package me.linoxgh.cratesenhanced.data;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,14 +43,11 @@ public class CrateType implements ConfigurationSerializable {
     }
     public void deleteDrop(@NotNull ItemStack drop) {
         TreeMap<Integer, ItemStack> newDrops = new TreeMap<>();
+        weights.remove(drop);
         ItemStack clone = drop.clone();
 
         int key = 0;
         for (Map.Entry<ItemStack, Integer> entry : weights.entrySet()) {
-            if (entry.getKey().equals(clone)) {
-                weights.remove(entry.getKey());
-                continue;
-            }
             key += entry.getValue();
             newDrops.put(key, entry.getKey());
         }

@@ -1,12 +1,11 @@
 package me.linoxgh.cratesenhanced;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import me.linoxgh.cratesenhanced.Data.BlockPosition;
-import me.linoxgh.cratesenhanced.Data.Crate;
-import me.linoxgh.cratesenhanced.Data.CrateStorage;
-import me.linoxgh.cratesenhanced.Data.CrateType;
+import me.linoxgh.cratesenhanced.data.BlockPosition;
+import me.linoxgh.cratesenhanced.data.Crate;
+import me.linoxgh.cratesenhanced.data.CrateStorage;
+import me.linoxgh.cratesenhanced.data.CrateType;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -30,14 +29,14 @@ import org.jetbrains.annotations.NotNull;
 public class Listeners implements Listener {
     private final CratesEnhanced plugin;
     private final CrateStorage crates;
-    private final List<BlockPosition> cooldowns;
 
     Listeners(@NotNull CratesEnhanced plugin, @NotNull CrateStorage crates) {
         this.plugin = plugin;
         this.crates = crates;
-        cooldowns = new ArrayList<>();
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+
+    private final Set<BlockPosition> cooldowns = new HashSet<>();
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
@@ -73,9 +72,8 @@ public class Listeners implements Listener {
             ItemStack drop = type.getRandomDrop();
             if (drop == null) return;
 
-            if (cooldowns.contains(pos)) return;
+            if (!cooldowns.add(pos)) return;
 
-            cooldowns.add(pos);
             playCrateAnimations(crate, p, drop, heldItem, newAmount);
         }
     }
@@ -136,9 +134,9 @@ public class Listeners implements Listener {
                                 }
                         );
                         cooldowns.remove(crate.getPos());
-                    }, 20L);
-                }, 20L);
-            }, 20L);
-        }, 20L);
+                    }, 15L);
+                }, 15L);
+            }, 15L);
+        }, 15L);
     }
 }
