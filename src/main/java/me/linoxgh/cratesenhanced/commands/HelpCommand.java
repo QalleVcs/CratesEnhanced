@@ -39,8 +39,8 @@ public class HelpCommand extends Command {
         if (sender.hasPermission("crates.list")) {
             messages.add("§6/crates list crates|types");
             messages.add("§e- §aLists down all of the crates and their types.");
-            messages.add("§6/crates list rewards §9<crate-type>");
-            messages.add("§e- §aLists down all of the rewards for the specified crate type.");
+            messages.add("§6/crates list rewards §9<crate-type> §e[weight|name]");
+            messages.add("§e- §aLists down all of the rewards for the specified crate type, sorting by either weight, name, or naturally.");
             messages.add(" ");
         }
         if (sender.hasPermission("crates.create")) {

@@ -44,8 +44,6 @@ public class ListCommand extends Command {
             return true;
         }
 
-        if (args.length != 2 && args.length != 3) return false;
-
         switch (args[1]) {
             case "crates":
                 sender.sendMessage("§e.*.-----_-----{ §3Crates §e}-----_-----.*.");
@@ -71,7 +69,7 @@ public class ListCommand extends Command {
                 return true;
 
             case "rewards":
-                if (args.length != 3) return false;
+                if (args.length <= 2) return false;
                 CrateType crate = crates.getCrateType(args[2]);
                 if (crate == null) {
                     sender.sendMessage("§4Could not find the specified crate type.");
@@ -80,16 +78,25 @@ public class ListCommand extends Command {
                 sender.sendMessage("§e.*.-----_-----{ §3Crates Enhanced §e}-----_-----.*.");
                 sender.sendMessage("§9Reward §e- §9Weight");
                 List<Map.Entry<ItemStack, Integer>> entries = new ArrayList<>(crate.getWeights().entrySet());
-                entries.sort((e1,e2) -> {
 
-                    int weightDiff = e1.getValue() - e2.getValue();
-                    if (weightDiff != 0) return weightDiff;
+                if (args.length > 3 && "weight".equalsIgnoreCase(args[3])) {
+                    entries.sort(Comparator.comparingInt(Map.Entry::getValue));
+                } else
+                if (args.length > 3 && "name".equalsIgnoreCase(args[3])) {
+                    entries.sort(Comparator.comparing((e) -> PlainComponentSerializer.plain().serialize(ItemUtil.displayName(e.getKey()))));
+                }
+                else {
+                    entries.sort((e1, e2) -> {
 
-                    String s1 = PlainComponentSerializer.plain().serialize(ItemUtil.displayName(e1.getKey()));
-                    String s2 = PlainComponentSerializer.plain().serialize(ItemUtil.displayName(e2.getKey()));
+                        int weightDiff = e1.getValue() - e2.getValue();
+                        if (weightDiff != 0) return weightDiff;
 
-                    return s1.compareTo(s2);
-                });
+                        String s1 = PlainComponentSerializer.plain().serialize(ItemUtil.displayName(e1.getKey()));
+                        String s2 = PlainComponentSerializer.plain().serialize(ItemUtil.displayName(e2.getKey()));
+
+                        return s1.compareTo(s2);
+                    });
+                }
                 for (Map.Entry<ItemStack, Integer> entry : entries) {
                     ItemStack drop = entry.getKey();
                     if (drop == null) continue;
